@@ -1,0 +1,32 @@
+.leftbox{
+    flex:1;
+    background: #3bd3ee;
+    z-index:2;
+    margin:50px;
+    width: 500px;
+    border-radius: 15px ;
+
+}
+.button{
+    width: 80px;
+    text-align: center;
+    margin:10px;
+}
+.buttons{
+    display: grid;
+}
+.input-box{
+    width: 200px;
+}
+.info-text{
+    font-family: "Kristen ITC", sans-serif;
+    font-size: 30px;
+    font-weight: 500;
+    margin-top: 50px;
+}
+.insert-number{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}

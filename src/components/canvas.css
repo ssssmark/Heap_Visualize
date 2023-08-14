@@ -1,0 +1,10 @@
+.right-box{
+    border:2px solid black;
+    background: #67ee98;
+    width: 800px;
+    z-index: 2;
+    margin:50px;
+    border-radius: 15px;
+    padding:0;
+    text-align: center;
+}
