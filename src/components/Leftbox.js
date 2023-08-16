@@ -7,7 +7,8 @@ export default class Leftbox extends React.Component{
         super(props);
         this.state={
             InputValue:'',
-            allValue:this.props.allValue
+            allValue:this.props.allValue,
+
         }
     }
     handleClick=()=>{
@@ -62,7 +63,7 @@ export default class Leftbox extends React.Component{
                                     color="primary"
                                     className="button"
                                     onClick={()=> {
-                                        this.props.heapsort(this.state.allValue)
+                                        this.props.handlebtnclick()
                                     }}
                             >
                                 Sort
