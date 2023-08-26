@@ -18,9 +18,6 @@ class App extends React.Component {
         allValue: [],
         root: null,
     };
-    constructor() {
-        super();
-    }
     componentDidMount() {
         this.setState({
             root: this.buildBinaryTree([]),
@@ -55,53 +52,80 @@ class App extends React.Component {
 
         return root;
     };
-    swap = async (A, i, j, times) => {
+    swap = async (A, i, j) => {
+
         let temp = A[i];
         A[i] = A[j];
         A[j] = temp;
+
         /**
          * tips:这里设置当前组件state.allValue的值是没问题的，肯定可以成功的，如果有视图中使用了allValue的值，那么视图也会更新。
          * 1.下面视图中的canvas组件也传递了state.allValue是没有问题的
          * 2.为何state.allValue没有触发canvas组件的渲染，请看canvas组件内的tips
          */
-            // this.syncSleep(2000);
         const root = this.buildBinaryTree(A);
         console.log("swap root = ", root);
-        this.setState({
-            root,
-            allValue: A,
-        });
+            this.setState({
+                root,
+                allValue: A,
+            });
         return true;
-        /*console.log(this.state.allValue.map(item=>item.value))*/
-        /* this.highlightAndAnimate(A,i,j,times)*/
     };
-    shiftDown = (A, i, length, times) => {
+    shiftDown = (A, i, length) => {
         let temp = A[i].value; // 当前父节点
         // j<length 的目的是对结点 i 以下的结点全部做顺序调整
-        for (let j = 2 * i + 1; j < length; j = 2 * j + 1) {
+        /*for (let j = 2 * i + 1; j < length; j = 2 * j + 1) {
             temp = Number(A[i].value); // 将 A[i] 取出，整个过程相当于找到 A[i] 应处于的位置
             if (j + 1 < length && Number(A[j].value) < Number(A[j + 1].value)) {
                 j++; // 找到两个孩子中较大的一个，再与父节点比较
             }
             if (temp < Number(A[j].value)) {
-                this.swap(A, i, j, times); // 如果父节点小于子节点:交换；否则跳出
-                times.swapTimes += 1;
+                A[i].isHighlight=true;
+                A[j].isHighlight=true;
+                this.swap(A, i, j); // 如果父节点小于子节点:交换；否则跳出
+                this.asyncSleep(2000).then(()=>{
+                        A[i].isHighlight=false;
+                        A[j].isHighlight=false;
+                })
                 i = j; // 交换后，temp 的下标变为 j
             } else {
                 break;
             }
-        }
+        }*/
+            this.handleshiftFor(A,i,2*i+1,length,temp)
     };
+    handleshiftFor(A,i,j,length,temp)
+    {
+        if(j>=length)
+            return;
+        temp=Number(A[i].value);
+        if (j + 1 < length && Number(A[j].value) < Number(A[j + 1].value)) {
+            j++; // 找到两个孩子中较大的一个，再与父节点比较
+        }
+        if (temp < Number(A[j].value)) {
+            /*A[i].isHighlight=true;
+            A[j].isHighlight=true;*/
+            this.swap(A, i, j); // 如果父节点小于子节点:交换；否则跳出
+         /*   this.asyncSleep(2000).then(()=>{
+                A[i].isHighlight=false;
+                A[j].isHighlight=false;
+            })*/
+            i = j; // 交换后，temp 的下标变为 j
+        } else {
+            return;
+        }
+        this.handleshiftFor(A,i,2*j+1,length,temp)
 
+    }
     // 堆排序
     HeapSort = (A) => {
-        let times = { swapTimes: 0 };
         // 初始化大顶堆，从第一个非叶子结点开始
         console.log("初始化大顶堆");
         for (let i = Math.floor(A.length / 2 - 1); i >= 0; i--) {
-            this.shiftDown(A, i, A.length, times);
+            this.shiftDown(A, i, A.length);
         }
-        console.log("大顶堆完成");
+            window.alert("大根堆构造完成")
+
         /**
          * issus:
          * 1.这里导致的为何你延迟了2s，但是视图没有按照你预期的2s一更新
@@ -121,50 +145,27 @@ class App extends React.Component {
          * 2.分析到了的setState就会被合并，显然，你只有this.swap有setState，所以自然就被render渲染了
          * 3.然后我们判断是否循环完整个数组，如果没有，那么我们就延迟2s后再次调用此函数，此时，react内部机制就没法分析到这个延迟2s后的逻辑了
          */
-        this.handleLoopFor(times, A, Math.floor(A.length - 1));
+        this.handleLoopFor( A, Math.floor(A.length - 1));
     };
     //   单独声明一个递归概念的循环自调函数
-    handleLoopFor(times, A, currentIndex) {
-        this.swap(A, 0, currentIndex, times);
-        times.swapTimes += 1;
-        this.shiftDown(A, 0, currentIndex, times);
+    handleLoopFor( A, currentIndex) {
+
+        this.swap(A, 0, currentIndex);
+        this.shiftDown(A, 0, currentIndex);
+        A[0].isHighlight=true;
+        A[currentIndex].isHighlight=true;
+        this.asyncSleep(2000).then(()=>{
+            A[0].isHighlight=false;
+            A[currentIndex].isHighlight=false;
+        })
         // 在这来延迟2s
         if (currentIndex > 0) { // react只能分析到此行
             this.asyncSleep(2000).then(() => {
-                this.handleLoopFor(times, A, currentIndex - 1);
+                this.handleLoopFor( A, currentIndex - 1);
             });
         }
     }
 
-    /*    shouldComponentUpdate(nextProps, nextState) {
-          console.log(nextState);
-
-          return true;
-      }
-      static getDerivedStateFromProps(nextProps, prevState) {
-          // 这里可以拿到更新后的状态 prevState
-          console.log("state更新啦")
-          return {
-              allValue: prevState.allValue
-          };
-      }*/
-
-    // 高亮和显示动画
-    highlightAndAnimate = (array, index1, index2, times) => {
-        // 高亮和显示动画的逻辑
-        array[index1].isHighlight = true;
-        array[index2].isHighlight = true;
-
-        // 模拟动画效果，延时一段时间后恢复 isHighlight 为 false
-        this.sleep(2000);
-
-        array[index1].isHighlight = false;
-        array[index2].isHighlight = false;
-        this.setState({
-            allValue: array,
-        });
-        console.log("恢复");
-    };
     /**tips
      * 异步延迟函数
      * @param {number} delay 延迟毫秒数

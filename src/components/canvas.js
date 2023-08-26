@@ -64,7 +64,7 @@ export default class Canvas extends React.Component {
                 const nowKey = this.randomString(16)
                 tree.push(
                     <TreeNode
-                        color={/*node.value.isHighlight*/0 ? "red" : "yellow"}
+                        color={node.value.isHighlight ? "red" : "yellow"}
                         cx={x}
                         cy={y}
                         x11={x - 20 * Math.cos(Math.PI / 4)}
