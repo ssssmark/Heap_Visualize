@@ -69,6 +69,15 @@ export default class Leftbox extends React.Component{
                                 Sort
                             </Button>
                         </div>
+                        <div className="button">
+                            <Button variant="contained"
+                                    color="primary"
+                                    className="button"
+                                    onClick={()=>{this.props.reset()}}
+                            >
+                                Reset
+                            </Button>
+                        </div>
 
                     </div>
 

@@ -195,6 +195,12 @@ class App extends React.Component {
             ]),
         });
     }
+    reset=()=>{
+        this.setState({
+            allValue:[],
+            root:null
+        })
+    }
     handlebtnclick() {
         let A = this.state.allValue;
         this.HeapSort(A);
@@ -208,6 +214,7 @@ class App extends React.Component {
                     allValue={this.state.allValue}
                     root={this.buildBinaryTree(this.state.allValue)}
                     handlebtnclick={this.handlebtnclick.bind(this)}
+                    reset={this.reset.bind(this)}
                 />
                 <Canvas InputValue={this.state.InputValue} root={this.state.root} />
             </div>
